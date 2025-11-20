@@ -103,26 +103,9 @@ struct ContentView: View {
             Spacer(minLength: 16)
             NumberView(numerator: numerator, denominator: denominator)
             RainbowDivider()
-
-            // Answer input
-            HStack {
-                Spacer()
-                TextField("Type your answer", text: $answerText.digitsOnly())
-                    .multilineTextAlignment(.center)
-                    .textInputAutocapitalization(.never)
-                    .keyboardType(.numberPad)
-                    .submitLabel(.done)
-                    .onSubmit {
-                        checkAnswerAndAdvance()
-                    }
-                    .numberStyle()
-                Button("Check") {
-                    checkAnswerAndAdvance()
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.blue)
-                Spacer()
-            }
+            AnswerInputView(text: $answerText, onSubmit: {
+                checkAnswerAndAdvance()
+            })
             .padding(.top, 8)
 
             Spacer()
@@ -391,6 +374,28 @@ struct NumberView: View {
         }
         .font(.title2)
         .padding()
+    }
+}
+
+struct AnswerInputView: View {
+    @Binding var text: String
+    var onSubmit: @MainActor () -> Void
+
+    var body: some View {
+        HStack {
+            Spacer()
+            TextField("Type your answer", text: $text.digitsOnly())
+                .multilineTextAlignment(.center)
+                .textInputAutocapitalization(.never)
+                .keyboardType(.numberPad)
+                .submitLabel(.done)
+                .onSubmit { onSubmit() }
+                .numberStyle()
+            Button("Check") { onSubmit() }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)
+            Spacer()
+        }
     }
 }
 
